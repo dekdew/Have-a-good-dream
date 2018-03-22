@@ -1,20 +1,27 @@
 #include <Servo.h>
 
-#define switch 2
+#define IOswitch 2
+#define mic A0
 
 Servo servo_1, servo_2;
-int pos_1 = 0, pos_2 = 0;
+int pos_1 = 0, pos_2 = 0, val; 
 
 void setup() {
   servo_1.attach(9);
   servo_2.attach(10);
 
-  pinMode(switch, INPUT);
+  pinMode(IOswitch, INPUT);
+  pinMode(mic, INPUT);
+
+  Serial.begin (9600);
 }
 
 void loop() {
+  Serial.println(analogRead(mic));
+
 //  on
-  if (digitalRead(switch) == HIGH) {
+  if (digitalRead(IOswitch) == HIGH) {
+
   //  Servo
     for (pos_1 = 45; pos_1 <= 135; pos_1 += 1) {
       pos_2 = 180 - pos_1;

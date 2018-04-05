@@ -1,54 +1,51 @@
-#include <Metro.h>
 #include <Servo.h>
+#include <SoftwareSerial.h>
 
 #define IOswitch 2
-#define mic A0
+#define RX 0
+#define TX 1
 
-Servo servo_1, servo_2;
+Servo SERVO_1, SERVO_2;
 
-Metro servo_goMetro = Metro(500);
-Metro servo_backMetro = Metro(1001);
-Metro micMetro = Metro(500);
+SoftwareSerial ArduinoSerial(RX, TX); // RX, TX
 
-int pos_1 = 0, pos_2 = 0, val; 
+int pos_1 = 0, pos_2 = 0; 
 
 void setup() {
-  servo_1.attach(9);
-  servo_2.attach(10);
+  SERVO_1.attach(9);
+  SERVO_2.attach(10);
 
   pinMode(IOswitch, INPUT);
-  pinMode(mic, INPUT);
 
-  Serial.begin (9600);
+  Serial.begin (115200);
+
+  ArduinoSerial.begin(4800);
 }
 
 void loop() {
-  if (micMetro.check() == 1) {
-   Serial.println(analogRead(mic)); 
-  }
 
   //  on
   if (digitalRead(IOswitch) == HIGH) {
-
     //  Servo
-    if (servo_goMetro.check() == 1) {
-      pos_1 = 45;
-      pos_2 = 135;
+    for (pos_1 = 45; pos_1 <= 135; pos_1 += 1) {
+      pos_2 = 180 - pos_1;
+      SERVO_1.write(pos_1);
+      SERVO_2.write(pos_2);
+      delay(5);
     }
-    if (servo_backMetro.check() == 1) {
-      pos_1 = 135;
-      pos_2 = 45;
+    for (pos_2 = 45; pos_2 <= 135; pos_2 += 1) {
+      pos_1 = 180 - pos_2;
+      SERVO_1.write(pos_1);
+      SERVO_2.write(pos_2);
+      delay(5);
     }
-    servo_1.write(pos_1);
-    servo_2.write(pos_2);
-
   }
 
   // off
   else {
     //  Servo Setup
-    servo_1.write(90);
-    servo_2.write(90);
+    SERVO_1.write(90);
+    SERVO_2.write(90);
 
   }
 
